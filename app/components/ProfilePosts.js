@@ -3,15 +3,19 @@ import Axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import LoadingDotsIcon from "./LoadingDotsIcon";
 
-function ProfilePosts() {
+function ProfilePosts(props) {
   const { username } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
+    const ourRequest = Axios.CancelToken.source();
+
     async function fetchPosts() {
       try {
-        const response = await Axios.get(`/profile/${username}/posts`);
+        const response = await Axios.get(`/profile/${username}/posts`, {
+          cancelToken: ourRequest.token,
+        });
         setPosts(response.data);
         setIsLoading(false);
       } catch (e) {
@@ -19,7 +23,10 @@ function ProfilePosts() {
       }
     }
     fetchPosts();
-  }, []);
+    return () => {
+      ourRequest.cancel();
+    };
+  }, [username]);
 
   if (isLoading) return <LoadingDotsIcon />;
 
@@ -27,9 +34,9 @@ function ProfilePosts() {
     <div className="list-group">
       {posts.map((post) => {
         const date = new Date(post.createdDate);
-        const dateFormatted = `${date.getDate()}/${
+        const dateFormatted = `${
           date.getMonth() + 1
-        }/${date.getFullYear()}`;
+        }/${date.getDate()}/${date.getFullYear()}`;
 
         return (
           <Link
