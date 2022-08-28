@@ -25,7 +25,7 @@ function HeaderLoggedOut(props) {
         });
       }
     } catch (e) {
-      console.log("There was a problem.");
+      console.log("There was a problem logging in.");
     }
   }
 
