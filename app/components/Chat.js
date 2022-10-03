@@ -25,7 +25,8 @@ function Chat() {
 
   useEffect(() => {
     socket.current = io(
-      process.env.BACKENDURL || "https://greyhoundapp.herokuapp.com"
+      process.env.BACKENDURL ||
+        "https://greyhoundappbackendservice.onrender.com"
     );
 
     socket.current.on("chatFromServer", (message) => {
